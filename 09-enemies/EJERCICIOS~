@@ -53,7 +53,7 @@ EJERCICIOS
 
    - si B y F son 0, el enemigo se desplaza en línea recta.
 
-   - si E y A son 0, el enemigo vuela con velocidad y constante, pero
+   - si F y A son 0, el enemigo vuela con velocidad y constante, pero
      va moviéndose de izquierda a derecha
 
 
