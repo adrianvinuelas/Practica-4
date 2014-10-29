@@ -12,7 +12,8 @@ var enemies = {
     // B, C y E substituirán a los valores por defecto definidos en la
     // variable baseParameters del constructor Enemy(). Ver
     // comentarios en el código del constructor al final del fichero.
-    basic: { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 }
+    basic: { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 },
+    basic1: { x: 100, y: 100, sprite: 'enemy_ship'}
 
 };
 
@@ -37,6 +38,8 @@ var playGame = function() {
     // segundo argumento de la llamada al constructor. Ver comentarios en el
     // constructor Enemy al final de este fichero.
     board.add(new Enemy(enemies.basic, { x: 200 }));
+    board.add(new Enemy(enemies.basic1));
+    board.add(new Enemy(enemies.basic1, { x: 200 }));
 
     board.add(new PlayerShip());
     Game.setBoard(3,board);
