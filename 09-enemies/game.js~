@@ -4,7 +4,8 @@ var sprites = {
     enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
     enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
     enemy_ship: { sx: 116, sy: 0, w: 42, h: 43, frames: 1 },
-    enemy_circle: { sx: 158, sy: 0, w: 32, h: 33, frames: 1 }
+    enemy_circle: { sx: 158, sy: 0, w: 32, h: 33, frames: 1 },
+    explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 1 }
 };
 
 
@@ -12,7 +13,7 @@ var enemies = {
     // B, C y E substituirán a los valores por defecto definidos en la
     // variable baseParameters del constructor Enemy(). Ver
     // comentarios en el código del constructor al final del fichero.
-    basic: { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 }
+    basic: { x: 100, y: -50, sprite: 'enemy_purple', B: 100, C: 2 , E: 100 },
     basic1: { x: 100, y: 100, sprite: 'enemy_ship'}
 
 };
@@ -159,6 +160,18 @@ var PlayerShip = function() {
 	    this.board.add(new PlayerMissile(this.x,this.y+this.h/2));
 	    this.board.add(new PlayerMissile(this.x+this.w,this.y+this.h/2));
 	}
+	
+	if(Game.keys['bolafuegoizq'] && !this.presionado && this.reload < 0){
+		this.reload = this.reloadTime;
+		this.presionado = true; // como he disparado presionado = true
+		this.board.add(new PlayerExplosion(this.x,this.y+this.h/2)));
+	}
+
+	if(Game.keys['bolafuegoder'] && !this.presionado && this.reload < 0){
+		this.reload = this.reloadTime;
+		this.presionado = true; // como he disparado presionado = true
+		this.board.add(new PlayerExplosion(this.x+this.w,this.y+this.h/2)));
+	}
     }
 
     this.draw = function(ctx) {
@@ -287,6 +300,29 @@ Enemy.prototype.draw = function(ctx) {
 }
 
 
+// Constructor de las bolas de fuego.
+// Los metodos de esta clase los añadimos a su prototipo. De esta
+// forma solo existe una copia de cada uno para todas las bolas de fuego, y
+// no una copia para cada objeto bola de fuego
+var PlayerExplosion = function(x,y) { //poner tercer parametro para saber si va pa la izquierda(-1,5) o la derecha(1,5)
+    this.w = SpriteSheet.map['explosion'].w;
+    this.h = SpriteSheet.map['explosion'].h;
+    this.x = x - this.w/2; 
+
+    this.y = y - this.h; 
+    
+};
+
+PlayerExplosion.prototype.step = function(dt)  {
+    
+    this.x += dt * sin(0); //falta hacer la parabola
+    this.y += dt * sin(0);
+    if(this.y < -this.h) { this.board.remove(this); }
+};
+
+PlayerExplosion.prototype.draw = function(ctx)  {
+    SpriteSheet.draw(ctx,'explosion',this.x,this.y);
+};
 
 $(function() {
     Game.initialize("game",sprites,startGame);
