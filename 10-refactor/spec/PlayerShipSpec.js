@@ -136,6 +136,38 @@ describe("Clase PlayerShip", function(){
 	expect(miNave.x).toEqual(Game.width - 37);
 
     });
+    
+    it("prueba disparo sin mantener tecla pulsada", function(){
+		var miNave = new PlayerShip();
+		Game = {width: 320, height: 480, keys: {'fire': true}};
+		board = {add: function(obj) {} };
+		
+		miNave.board = board;
+		spyOn(board, "add");
+		
+		miNave.step(0.5);
+		expect(board.add).toHaveBeenCalled(); //disparo por lo que se llama a añadir misiles
 
+		//no he soltado el boton de disparo por lo que no se llama a añadir misiles
+		for (var i=0; i<3; i++) {
+			board.add.reset(); //reseteo el valor inicial de add(no es llamado)
+			miNave.reload = -1;
+			miNave.step(0.5);
+			expect(board.add).not.toHaveBeenCalled(); 
+		}
+
+		//dejo de soltar el boton de disparar y por tanto sigue sin llamar a añadir misiles
+		Game.keys['fire'] = false;
+		miNave.reload = -1;
+		miNave.step(0.5);
+		expect(board.add).not.toHaveBeenCalled();
+
+		//vuelvo a disparar y se llama a añadir misiles
+		Game.keys['fire'] = true;
+		miNave.reload = -1;
+		miNave.step(0.5);
+		expect(board.add).toHaveBeenCalled();
+
+	});
 });
 

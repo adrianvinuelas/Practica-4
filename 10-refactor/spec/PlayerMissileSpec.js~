@@ -57,24 +57,24 @@ describe("pruebas de PlayerMissileSpec", function(){
 		gameMissile.board = objBoard;
 		
 		expect(gameMissile.x).toEqual(11);
-		expect(gameMissile.y).toEqual(81);
+		expect(gameMissile.y).toEqual(71);
 
 		var dt = 1;
    		gameMissile.step(dt);
 
 		expect(gameMissile.board.remove).toHaveBeenCalled();
-   		expect(gameMissile.y).toEqual(-619);
+   		expect(gameMissile.y).toEqual(-639);
 		
 		var gameMissile2 = new PlayerMissile(47,61);
 		gameMissile2.board = objBoard;
-		expect(gameMissile2.x).toEqual(48);
-		expect(gameMissile2.y).toEqual(71);
+		expect(gameMissile2.x).toEqual(46);
+		expect(gameMissile2.y).toEqual(51);
 		
 		dt= 2;
 		gameMissile2.step(dt);
 
 		expect(gameMissile2.board.remove).toHaveBeenCalled();
-   		expect(gameMissile2.y).toEqual(-1329);
+   		expect(gameMissile2.y).toEqual(-1349);
 	});
 
 	it("prueba de draw", function(){

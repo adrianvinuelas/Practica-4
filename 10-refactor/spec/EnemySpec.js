@@ -61,3 +61,93 @@
 
 */
 
+describe("pruebas enemy()", function(){
+		
+	var canvas, ctx;
+
+    	beforeEach(function(){
+		loadFixtures('index.html');
+
+		canvas = $('#game')[0];
+		expect(canvas).toExist();
+
+		ctx = canvas.getContext('2d');
+		expect(ctx).toBeDefined();
+
+		oldGame = Game;
+   	});
+
+    	afterEach(function(){
+    	    Game = oldGame;
+   	});
+
+ 	it("crear enemy", function(){
+		SpriteSheet.map = {
+			enemy_purple : { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }
+		}
+		var enemies = {
+   			 basic: { x: 100, y: -50, sprite: 'enemy_purple'},
+			 basic1: { x: 100, y: -50, sprite: 'enemy_purple' , B: 100, C: 2 , E: 100 }
+		};
+
+		var enemy = new Enemy(enemies.basic);
+		expect(enemy.A).toEqual(0);
+		expect(enemy.B).toEqual(0);
+		expect(enemy.C).toEqual(0);
+		var enemy1 = new Enemy(enemies.basic1, {x: 200});
+		expect(enemy1.A).toEqual(0);
+		expect(enemy1.B).toEqual(100);
+		expect(enemy1.C).toEqual(2);
+		
+	});
+
+	it("step de enemy",function(){
+		SpriteSheet.map = {
+			enemy_purple : { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }
+		}
+		var enemies = {
+   			 basic: { x: 100, y: 100, sprite: 'enemy_purple'},
+			 basic1: { x: 100, y: -50, sprite: 'enemy_purple' , B: 100, C: 2 , E: 100 },
+			 basic2: { x: 100, y: 500, sprite: 'enemy_purple' , B: 100, C: 2 , E: 100 }
+		};
+		var board1 = { remove: function(){}};
+		
+		Game = {width: 320, height: 480};
+		
+		var enemy = new Enemy(enemies.basic); //esta nave no se mueve(A,B,C,D,E,F,G,H = 0), x= 100 , y= 100
+		enemy.step(1);
+		expect(enemy.x).toEqual(100);
+		expect(enemy.y).toEqual(100);
+		var enemy2 = new Enemy(enemies.basic1);//este si se mueve porque B=100
+		enemy2.step(1);
+		expect(Math.floor(enemy2.x)).toEqual(190);
+		expect(enemy2.y).toEqual(50);
+		
+
+		var enemy3 = new Enemy(enemies.basic2);//este si se mueve porque B=100,pero se va a borrar porque esta fuera del tablero y = 500
+		enemy3.board = board1;
+  		spyOn(enemy3.board, "remove");
+
+		enemy3.step(1);
+		expect(Math.floor(enemy3.x)).toEqual(190);
+		expect(enemy3.y).toEqual(600);
+		expect(enemy3.board.remove).toHaveBeenCalled();
+	});
+
+	it("draw de enemy",function(){
+		SpriteSheet = {
+			map : {enemy_purple : { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }},
+			draw : function(){}
+		}
+		var enemies = {
+   			 basic: { x: 100, y: 100, sprite: 'enemy_purple'},
+		};
+		
+
+		var enemy = new Enemy(enemies.basic);
+		spyOn(SpriteSheet,"draw");
+		enemy.draw(ctx);
+		expect(SpriteSheet.draw).toHaveBeenCalled();	
+	});
+});
+
