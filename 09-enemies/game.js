@@ -164,13 +164,13 @@ var PlayerShip = function() {
 	if(Game.keys['bolafuegoizq'] && !this.presionado && this.reload < 0){
 		this.reload = this.reloadTime;
 		this.presionado = true; // como he disparado presionado = true
-		this.board.add(new PlayerExplosion(this.x,this.y+this.h/2)));
+		this.board.add(new PlayerExplosion(this.x,this.y+this.h/2, -1.5));
 	}
 
 	if(Game.keys['bolafuegoder'] && !this.presionado && this.reload < 0){
 		this.reload = this.reloadTime;
 		this.presionado = true; // como he disparado presionado = true
-		this.board.add(new PlayerExplosion(this.x+this.w,this.y+this.h/2)));
+		this.board.add(new PlayerExplosion(this.x+this.w,this.y+this.h/2,1.5));
 	}
     }
 
@@ -304,19 +304,22 @@ Enemy.prototype.draw = function(ctx) {
 // Los metodos de esta clase los añadimos a su prototipo. De esta
 // forma solo existe una copia de cada uno para todas las bolas de fuego, y
 // no una copia para cada objeto bola de fuego
-var PlayerExplosion = function(x,y) { //poner tercer parametro para saber si va pa la izquierda(-1,5) o la derecha(1,5)
+var PlayerExplosion = function(x,y,direccion) { //poner tercer parametro para saber si va pa la izquierda(-1,5) o la derecha(1,5)
     this.w = SpriteSheet.map['explosion'].w;
     this.h = SpriteSheet.map['explosion'].h;
     this.x = x - this.w/2; 
 
     this.y = y - this.h; 
+    this.vy = -700;
+    this.vx = 100 * direccion;
     
 };
 
 PlayerExplosion.prototype.step = function(dt)  {
     
-    this.x += dt * sin(0); //falta hacer la parabola jugar con senos y multiplicacion de -1,5 y 1,5 para hacer la parabola
-    this.y += dt * sin(0);
+    this.x += this.vx * dt;
+    this.y += this.vy * dt;
+    this.vy +=50;
     if(this.y < -this.h) { this.board.remove(this); }
 };
 
