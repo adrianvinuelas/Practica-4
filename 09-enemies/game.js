@@ -149,7 +149,7 @@ var PlayerShip = function() {
 
 	this.reload-=dt; //tiempo de recarga es igual 0.25 -1(dt=1 por ejemplo) = -0.75(ha pasado el tiempo reload)
 
-	if(!Game.keys['fire']){ this.presionado = false}//si no estoy disparando, presionado = false
+	if(!Game.keys['fire'] && !Game.keys['bolafuegoizq']&& !Game.keys['bolafuegoder']){ this.presionado = false}//si no estoy disparando, presionado = false
 	//si mantengo pulsado, presionado seguira siendo true, y no entrara a crear los misiles	
    	
 	if(Game.keys['fire'] && !this.presionado && this.reload < 0) {
@@ -320,7 +320,12 @@ PlayerExplosion.prototype.step = function(dt)  {
     this.x += this.vx * dt;
     this.y += this.vy * dt;
     this.vy +=50;
-    if(this.y < -this.h) { this.board.remove(this); }
+    //if(this.y < -this.h) { this.board.remove(this); }
+    if(this.y > Game.height ||
+      this.x < -this.w||
+      this.x > Game.width + this.w) {
+      this.board.remove(this);
+    }
 };
 
 PlayerExplosion.prototype.draw = function(ctx)  {
