@@ -73,9 +73,8 @@ describe("pruebas PlayerExplosion",function(){
 		fire.draw(ctx);
 
 		expect(SpriteSheet.draw).toHaveBeenCalled();
-		/*expect(ctx.drawImage.calls[0].args[1]).toEqual(0);
-		expect(ctx.drawImage.calls[0].args[2]).toEqual(30);
-		expect(ctx.drawImage.calls[0].args[3]).toEqual(2);
-		expect(ctx.drawImage.calls[0].args[4]).toEqual(10);*/
+		expect(SpriteSheet.draw.calls[0].args[1]).toEqual("explosion");
+ 		expect(SpriteSheet.draw.calls[0].args[2]).toEqual(fire.x);
+ 		expect(SpriteSheet.draw.calls[0].args[3]).toEqual(fire.y);
 	});
 });
