@@ -175,7 +175,7 @@ describe("Pruebas de colisiones", function(){
 
 		gameBoard.step(0.1);
 		expect(gameBoard.removed.length).toEqual(1);//al chocar la bola elimina al enemigo y se añade a objetos a borrar
-		expect(gameBoard.objects.length).toEqual(2);//1 objeto queda(fireball), el enemigo al chocar se borra??????
+		expect(gameBoard.objects.length).toEqual(5);//1 objeto queda(fireball), el enemigo al chocar se borra??????
 		//porque si el enemigo se añade a removed no se borra y objects pasa a tener tamaño 1
 		expect(enemy.health).toEqual(-Infinity);//le resta a 60-10(daño del misil) = 50 (vida del enemigo restante)
 	});
