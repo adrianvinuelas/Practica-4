@@ -75,7 +75,7 @@ describe("pruebas de PlayerMissileSpec", function(){
 		gameMissile2.step(dt);
 
 		expect(gameMissile2.board.remove).toHaveBeenCalled();
-   		expect(gameMissile2.y).toEqual(-1349);
+   		expect(gameMissile2.y).toEqual(-1329);
 	});
 
 	it("prueba de draw", function(){
