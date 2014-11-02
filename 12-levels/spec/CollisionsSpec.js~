@@ -180,8 +180,7 @@ describe("Pruebas de colisiones", function(){
 			       explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 },
 			       ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 }}
 		};
-		Game = {width: 320, height: 480,keys: {'left': false , 'right':false, 'fire': false},
-			setBoard: function(){}};
+		Game = {width: 320, height: 480,keys: {'left': false , 'right':false, 'fire': false}};
 		
 		var enemies = {
 			 basic: { x: 141.5, y: 328, sprite: 'enemy_ship' , E: 100 ,health: 60 }
