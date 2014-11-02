@@ -193,9 +193,9 @@ describe("Pruebas de colisiones", function(){
 		gameBoard.add(enemy);
 
 		gameBoard.step(1);
-		/*expect(enemy.x).toEqual(141.5);//coordenadas calculadas para la colision
+		expect(enemy.x).toEqual(141.5);//coordenadas calculadas para la colision
 		expect(enemy.y).toEqual(428);
 		expect(gameBoard.removed.length).toEqual(2); //al colisionar se añaden los dos para borrarlos
-		expect(gameBoard.objects.length).toEqual(0); //la lista de objetos queda vacía*/
+		expect(gameBoard.objects.length).toEqual(1); //la lista de objetos queda con bola de fuego
 	});
 });
