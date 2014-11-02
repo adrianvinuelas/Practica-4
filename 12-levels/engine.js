@@ -13,6 +13,7 @@
 
 // Objeto singleton Game: se guarda una unica instancia del
 // constructor anónimo en el objeto Game
+var _;
 var Game = new function() {                                                                  
 
     // Inicializa el juego
@@ -223,18 +224,12 @@ var GameBoard = function() {
 	// Convertimos en un array args (1..)
 	var args = Array.prototype.slice.call(arguments,1);
 
-	for(var i=0, len=this.objects.length; i<len;i++) {
-	    var obj = this.objects[i];
-	    obj[funcName].apply(obj,args)
-	}
+	_(this.objects).each( function(obj) { obj[funcName].apply(obj,args) });
     };
 
     // Devuelve el primer objeto de objects para el que func es true
     this.detect = function(func) {
-	for(var i = 0,val=null, len=this.objects.length; i < len; i++) {
-	    if(func.call(this.objects[i])) return this.objects[i];
-	}
-	return false;
+	return _(this.objects).find(function(obj) { if(func.call(obj)) return obj}) || false;
     };
 
     // Cuando Game.loop() llame a step(), hay que llamar al método
