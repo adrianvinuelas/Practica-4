@@ -108,29 +108,23 @@ describe("Pruebas de colisiones", function(){
 	it("misil destruye nave", function(){
 		SpriteSheet = {
 			map: { missile: { sx: 0, sy: 30, w: 2, h: 10, frames: 1 },
-			       enemy_ship: { sx: 116, sy: 0, w: 42, h: 43, frames: 1 }}
+			       enemy_ship: { sx: 116, sy: 0, w: 42, h: 43, frames: 1 },
+			       explosion: { sx: 0, sy: 64, w: 64, h: 64, frames: 12 }}
 		}
 		Game = {width: 320, height: 480};
 		var enemies = {
-			 basic: { x: 100, y: -50, sprite: 'enemy_ship' , health: 20 }
+			 basic: { x: 100, y: -50, sprite: 'enemy_ship' , health: 5 }
 		};
 		var gameBoard = new GameBoard();
 		var missile = new PlayerMissile(100, 200);
 		var enemy = new Enemy(enemies.basic,{x: 99 , y: 120});
 		gameBoard.add(missile);
 		gameBoard.add(enemy);
+		expect(gameBoard.objects.length).toEqual(2);
 		gameBoard.step(0.1);
-		expect(gameBoard.removed.length).toEqual(1);//al chocar el missile se añade a objetos a 
-		expect(gameBoard.objects.length).toEqual(1);//1 objeto queda(enemy), el misil al chocar se borra
-		expect(enemy.health).toEqual(10);//le resta a 20-10(daño del misil) = 10 (vida del enemigo restante)*/
-		/*var missile1 = new PlayerMissile(100, 200);
-		gameBoard.add(missile1);
-		//gameBoard.step(0.1);
-		/*expect(gameBoard.removed.length).toEqual(2);//al chocar el missile se añade a objetos a 
-		expect(gameBoard.objects.length).toEqual(0);//1 objeto queda(enemy), el misil al chocar se borra
-		expect(enemy.health).toEqual(0);//le resta a 60-10(daño del misil) = 50 (vida del enemigo restante)*/
-		//???????????????no me deja crear health <= 10
-			
+		expect(gameBoard.removed.length).toEqual(2);//al chocar el missile se añade a objetos a 
+		expect(gameBoard.objects.length).toEqual(1);//1 objeto queda(la explosion que se genera), el misil al chocar se borra junto al enemigo que también es eliminado
+		expect(enemy.health).toEqual(-5);//le resta a 20-10(daño del misil) = 10 (vida del enemigo restante)*
 	});
 
 	it("misil no destruye nave y desaparece", function(){
@@ -175,8 +169,7 @@ describe("Pruebas de colisiones", function(){
 
 		gameBoard.step(0.1);
 		expect(gameBoard.removed.length).toEqual(1);//al chocar la bola elimina al enemigo y se añade a objetos a borrar
-		expect(gameBoard.objects.length).toEqual(5);//1 objeto queda(fireball), el enemigo al chocar se borra??????
-		//porque si el enemigo se añade a removed no se borra y objects pasa a tener tamaño 1
+		expect(gameBoard.objects.length).toEqual(2);//2 objeto queda(fireball, y explosion que se genera), 
 		expect(enemy.health).toEqual(-Infinity);//le resta a 60-10(daño del misil) = 50 (vida del enemigo restante)
 	});
 
