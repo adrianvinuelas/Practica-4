@@ -53,7 +53,7 @@
 */
 describe("pruebas de niveles",function(){
 	var canvas, ctx;
-
+	var gameboard;
 	beforeEach(function(){
 		loadFixtures('index.html');
 
@@ -62,10 +62,12 @@ describe("pruebas de niveles",function(){
 
 		ctx = canvas.getContext('2d');
 		expect(ctx).toBeDefined();
+		gameBoard = new GameBoard();
 		oldGame = Game;
 	});
 
 	afterEach(function(){
+		
 	        Game = oldGame;
 	});
 
@@ -81,7 +83,8 @@ describe("pruebas de niveles",function(){
 		expect(nivel.callback).toBe(winGame);
 	});
 
-	it("primeros enemigos",function(){
+	it("step y pasar de nivel",function(){
+		var gameBoard= new GameBoard();
 		SpriteSheet = {
 			map: { enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
 			       enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }}
@@ -90,15 +93,33 @@ describe("pruebas de niveles",function(){
 		}
 		var level1 = [
   			//  Comienzo, Fin,   Frecuencia,  Tipo,       Override
- 			   [ 0,        4000,  500,         'mienemigo'                 ],
+ 			   [ 0,        4000,  500,         'mienemigo'            ],
    			   [ 6000,     13000, 800,         'ltr'                  ],
     			   [ 22000,    25000, 400,         'wiggle',   { x: 100 } ]
 		];
-		boardummy = {add: function(){}};
+		
 		var nivel = new Level(level1, winGame);
-		nivel.board = boardummy;
+
+		gameBoard.add(nivel);
+
 		expect(nivel.levelData.length).toEqual(3);
 		expect(nivel.callback).toBe(winGame);
+		spyOn(nivel.board,"add");
+		spyOn(nivel,"callback");
 		nivel.step(7);
+		expect(nivel.levelData.length).toEqual(2); //como el tiempo es mayor que 4000 los "mienemigo" se borran de leveldata
+		expect(nivel.board.add).toHaveBeenCalled();//llama a add con el enemigo "ltr"
+		
+		nivel.board.cnt[OBJECT_ENEMY] = 0;
+		nivel.step(26);
+		
+		expect(nivel.callback).toHaveBeenCalled();
 	});
+
+
+
+	it("después de nivel 1 aparece el 2",function(){
+		//SpriteSheet.load(sprites,startGame);
+	});
+
 });

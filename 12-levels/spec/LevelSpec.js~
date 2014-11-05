@@ -53,7 +53,7 @@
 */
 describe("pruebas de niveles",function(){
 	var canvas, ctx;
-
+	var gameboard;
 	beforeEach(function(){
 		loadFixtures('index.html');
 
@@ -62,10 +62,12 @@ describe("pruebas de niveles",function(){
 
 		ctx = canvas.getContext('2d');
 		expect(ctx).toBeDefined();
+		gameBoard = new GameBoard();
 		oldGame = Game;
 	});
 
 	afterEach(function(){
+		
 	        Game = oldGame;
 	});
 
@@ -81,7 +83,8 @@ describe("pruebas de niveles",function(){
 		expect(nivel.callback).toBe(winGame);
 	});
 
-	it("primeros enemigos",function(){
+	it("step y pasar de nivel",function(){
+		var gameBoard= new GameBoard();
 		SpriteSheet = {
 			map: { enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
 			       enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 }}
@@ -90,15 +93,104 @@ describe("pruebas de niveles",function(){
 		}
 		var level1 = [
   			//  Comienzo, Fin,   Frecuencia,  Tipo,       Override
- 			   [ 0,        4000,  500,         'mienemigo'                 ],
+ 			   [ 0,        4000,  500,         'mienemigo'            ],
    			   [ 6000,     13000, 800,         'ltr'                  ],
     			   [ 22000,    25000, 400,         'wiggle',   { x: 100 } ]
 		];
-		boardummy = {add: function(){}};
+		
 		var nivel = new Level(level1, winGame);
-		nivel.board = boardummy;
+
+		gameBoard.add(nivel);
+
 		expect(nivel.levelData.length).toEqual(3);
 		expect(nivel.callback).toBe(winGame);
+		spyOn(nivel.board,"add");
+		spyOn(nivel,"callback");
 		nivel.step(7);
+		expect(nivel.levelData.length).toEqual(2); //como el tiempo es mayor que 4000 los "mienemigo" se borran de leveldata
+		expect(nivel.board.add).toHaveBeenCalled();//llama a add con el enemigo "ltr"
+		
+		nivel.board.cnt[OBJECT_ENEMY] = 0;
+		nivel.step(26);
+		
+		expect(nivel.callback).toHaveBeenCalled();
 	});
+
+
+
+	it("después de nivel 1 aparece el 2",function(){
+		var SpriteSheet = new function() {
+    			this.map = { }; 
+
+	   		this.load = function(spriteData,callback) { 
+				this.map = spriteData;
+				this.image = new Image();
+				this.image.onload = callback;
+				this.image.src = 'images/sprites.png';
+			};
+		};
+		level1 = [[ 0, 2000, 500, 'step'],];
+		level2 = [[ 0, 1500, 500, 'step'],];
+		Game.keys['right'] = true;//para que la nave se vaya a la derecha del todo
+		Game.canvas = document.getElementById("game");
+		Game.width = Game.canvas.width;
+		Game.height= Game.canvas.height;
+		SpriteSheet.load(sprites,startGame);
+		spyOn(window, "playGame").andCallThrough();
+		spyOn(window, "winGame").andCallThrough();
+		spyOn(window, "newLevel").andCallThrough();
+		
+		Game.loop(); //Empieza el bucle
+		expect(window.playGame).not.toHaveBeenCalled(); //todavia no empieza a jugar
+		Game.keys['fire'] = false;
+		waits(100);
+		expect(window.newLevel).not.toHaveBeenCalled();
+		Game.keys['fire'] = true;//pulsamos tecla para empezar
+		waits(1000);
+		expect(window.playGame).toHaveBeenCalled();//empieza el nivel 1
+		Game.keys['fire'] = false;//para pulsarla cuando comience el siguiente nivel
+		waits(1000);//se acaba el primer nivel
+
+		/*runs(function(){
+			expect(window.newLevel).not.toHaveBeenCalled();
+			Game.keys['fire'] = true;//pulsamos tecla para empezar
+			waits(1000);
+		});
+		
+		runs(function(){
+			expect(window.playGame).toHaveBeenCalled();//empieza el nivel 1
+			Game.keys['fire'] = false;//para pulsarla cuando comience el siguiente nivel
+			waits(1000);//se acaba el primer nivel
+		});*/
+	});
+
+	/*it("gana jugador1",function(){
+		SpriteSheet = {
+			map: { enemy_bee: { sx: 79, sy: 0, w: 37, h: 43, frames: 1 },
+			       enemy_purple: { sx: 37, sy: 0, w: 42, h: 43, frames: 1 },
+			       ship: { sx: 0, sy: 0, w: 37, h: 42, frames: 1 }}
+			//solo añado enemy_bee(sprite de mienemigo) y enemy_purple(sprite ltr) porque step(7) solo da tiempo 
+			//a crear enemigos del tipo mienemigo y ltr
+		}
+		var level1 = [
+  			//  Comienzo, Fin,   Frecuencia,  Tipo,       Override
+ 			   [ 0,        4000,  500,         'mienemigo'            ],
+   			   [ 6000,     13000, 800,         'ltr'                  ],
+    			   [ 22000,    25000, 400,         'wiggle',   { x: 100 } ]
+		];
+		Game = {width: 320, height: 480,keys: {'left': false , 'right':false, 'fire': false},
+			setBoard: function(){}};
+		var gameBoard = new GameBoard();
+		boardummy = {add: function(){}};
+		var newLevel1 = newLevel();
+		var nivel = new Level(level1, newLevel1);
+		var miNave = new PlayerShip();
+		nivel.board = boardummy;
+		gameBoard.add(nivel);
+		gameBoard.add(miNave);
+		expect(nivel.levelData.length).toEqual(3);
+		gameBoard.step(26);
+		expect(nivel.callback).toBe(newLevel1); 
+		expect(numnivel).toEqual(1);
+	});*/
 });
